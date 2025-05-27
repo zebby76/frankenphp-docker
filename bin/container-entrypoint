@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+export DEBUG=${DEBUG:-false}
+[[ "${DEBUG}" == "true" ]] && set -x
+
+for FILE in $(find /usr/local/bin/container-entrypoint.d/entrypoint.d -iname \*.sh | sort); do
+  source ${FILE}
+done
+
+log "INFO" "+---- Configure FrankenPHP Container -----"
+
+for FILE in $(find /usr/local/bin/container-entrypoint.d/base.d -iname \*.sh | sort); do
+  source ${FILE}
+done
+
+log "INFO" "+---- FrankenPHP Container configured succesfully -----"
+
+exec docker-php-entrypoint "$@"
