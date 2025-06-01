@@ -2,10 +2,10 @@
 
 log "INFO" "| Configure Supervisor ..."
 
-OUTDIR="/app/etc/supervisor.d /app/var/run /app/var/log"
+OUTDIR="/opt/etc/supervisor.d /app/var/run /app/var/log"
 mkdir -p $OUTDIR
 
-apply-template /app/config/supervisord.conf.tmpl /app/etc/supervisord.conf
-apply-template /app/config/supervisor.d/ /app/etc/supervisor.d/
+apply-template /opt/config/supervisord.conf.tmpl /opt/etc/supervisord.conf
+apply-template /opt/config/supervisor.d/ /opt/etc/supervisor.d/
 
 true

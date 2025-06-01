@@ -1,8 +1,13 @@
-upload_max_filesize = {{ .Env.PHP_UPLOAD_MAX_FILESIZE }}
-post_max_size = {{ .Env.PHP_POST_MAX_SIZE }}
-
 expose_php = {{ .Env.PHP_EXPOSE_PHP }}
 date.timezone = {{ .Env.PHP_DATE_TIMEZONE }}
+apc.enable_cli = {{ .Env.PHP_APC_ENABLE_CLI }}
+session.use_strict_mode = {{ .Env.PHP_SESSION_USE_STRICT_MODE }}
+zend.detect_unicode = {{ .Env.PHP_ZEND_DETECT_UNICODE }}
+upload_max_filesize = {{ .Env.PHP_UPLOAD_MAX_FILESIZE }}
+post_max_size = {{ .Env.PHP_POST_MAX_SIZE }}
 display_errors = {{ .Env.PHP_DISPLAY_ERRORS }}
+memory_limit = {{ .Env.PHP_MEMORY_LIMIT }}
 
-memory_limit = {{.Env.PHP_MEMORY_LIMIT}}
+; https://symfony.com/doc/current/performance.html
+realpath_cache_size = {{ .Env.PHP_REALPATH_CACHE_SIZE }}
+realpath_cache_ttl = {{ .Env.PHP_REALPATH_CACHE_TTL }}
