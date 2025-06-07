@@ -96,4 +96,4 @@ jobs:
             *.cache-to=type=gha,mode=max
         env:
           GIT_HASH: ${{ github.sha }}
-          DOCKER_IMAGE_VERSION: ${{ (github.ref_type == 'tag' && github.ref_name) || needs.prepare.outputs.ref || 'dev' }}
+          DOCKER_IMAGE_VERSION: ${{ (github.ref_type == 'tag' && github.ref_name) || needs.prepare.outputs.ref || 'snapshot' }}
