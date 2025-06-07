@@ -8,7 +8,7 @@ if [ ! -f "/app/var/lock/appinit" ]; then
     case "$f" in
       *.sh)     log "INFO" "| $0: running $f"; . "$f" ;;
       *.php)    log "INFO" "| $0: running $f"; php -f "$f"; echo ;;
-      *)        log "INFO" "| $0: ignoring $f" ;;
+#      *)        log "INFO" "| $0: ignoring $f" ;;
     esac
   done
 

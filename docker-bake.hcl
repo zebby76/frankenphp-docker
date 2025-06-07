@@ -2,6 +2,10 @@ group "default" {
   targets = ["dev", "prd"]
 }
 
+variable "REL" {
+  default = "bookworm"
+}
+
 variable "DOCKER_IMAGE_NAME" {
   default = "zebby76/frankenphp"
 }
@@ -44,6 +48,14 @@ variable "PHP_EXT_XDEBUG_VERSION" {
   default = "3.4.2"
 }
 
+variable "AWSCLI_VERSION" {
+  default = "2.27.30"
+}
+
+variable "AWSCLI_ARCH" {
+  default = "x86_64"
+}
+
 function "tag" {
   params = [version, tgt]
   result = [
@@ -77,17 +89,22 @@ function "__semver" {
 
 target "default" {
   name = "${tgt}"
+
   matrix = {
     tgt = ["prd", "dev"]
   }
+
   context    = "."
   dockerfile = "Dockerfile"
   target     = tgt
+
   platforms  = [
     "linux/amd64",
     "linux/arm64"
   ]
+
   args = {
+    REL_ARG                    = "${REL}"
     PHP_VERSION_ARG            = "${PHP_VERSION}"
     NODE_VERSION_ARG           = "${NODE_VERSION}"
     COMPOSER_VERSION_ARG       = "${COMPOSER_VERSION}"
@@ -95,17 +112,46 @@ target "default" {
     PHP_EXT_REDIS_VERSION_ARG  = "${PHP_EXT_REDIS_VERSION}"
     PHP_EXT_APCU_VERSION_ARG   = "${PHP_EXT_APCU_VERSION}"
     PHP_EXT_XDEBUG_VERSION_ARG = "${PHP_EXT_XDEBUG_VERSION}"
+    AWSCLI_VERSION_ARG         = "${AWSCLI_VERSION}"
+    AWSCLI_ARCH_ARG            = "${AWSCLI_ARCH}"
   }
+
   labels = {
     "org.opencontainers.image.created" = "${timestamp()}"
     "org.opencontainers.image.version" = FRANKENPHP_VERSION
     "org.opencontainers.image.revision" = GIT_HASH
   }
+
   tags = distinct(flatten([
       DOCKER_IMAGE_LATEST ? tag("latest", tgt) : [],
       tag(GIT_HASH == "" || DOCKER_IMAGE_VERSION != "snapshot" ? "" : "sha-${substr(GIT_HASH, 0, 7)}", tgt),
       DOCKER_IMAGE_VERSION == "snapshot" ? [tag("snapshot", tgt)] : [for v in semver(DOCKER_IMAGE_VERSION) : tag(v, tgt)]
     ])
   )
+
+  hooks = [
+    {
+      platform = "linux/amd64"
+      build_args = {
+        AWSCLI_ARCH_ARG = "x86_64"
+      }
+    },     
+    {
+      platform = "linux/arm64"
+      build_args = {
+        AWSCLI_ARCH_ARG = "aarch64"
+      }
+    }
+  ]
+
+  attest = [
+    {
+      type = "provenance"
+      mode = "max"
+    },
+    {
+      type = "sbom"
+    }
+  ]
 
 }

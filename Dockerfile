@@ -1,4 +1,6 @@
 # syntax=docker/dockerfile:1.15
+ARG REL_ARG
+
 ARG PHP_VERSION_ARG
 ARG NODE_VERSION_ARG
 ARG COMPOSER_VERSION_ARG
@@ -6,7 +8,7 @@ ARG FRANKENPHP_VERSION_ARG
 
 FROM composer:${COMPOSER_VERSION_ARG:-2.8.4} AS composer
 FROM node:${NODE_VERSION_ARG:-20} AS node
-FROM dunglas/frankenphp:${FRANKENPHP_VERSION_ARG:-1.6.0}-php${PHP_VERSION_ARG:-8.4.7}-bookworm AS upstream
+FROM dunglas/frankenphp:${FRANKENPHP_VERSION_ARG:-1.6.0}-php${PHP_VERSION_ARG:-8.4.7}-${REL_ARG:-bookworm} AS upstream
 
 FROM upstream AS build
 
@@ -56,7 +58,10 @@ FROM upstream AS common
 
 LABEL org.opencontainers.image.title="ZeBBy76 FrankenPHP" \
       org.opencontainers.image.authors="sebastian.molle@gmail.com" \
-      org.opencontainers.image.source="https://github.com/zebby76/frankenphp-docker" 
+      org.opencontainers.image.source="https://github.com/zebby76/frankenphp-docker"
+
+ARG AWSCLI_VERSION_ARG
+ARG AWSCLI_ARCH_ARG
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -84,6 +89,17 @@ COPY --chmod=775 --chown=root:root bin/ /usr/local/bin/
 COPY --from=build /usr/local/lib/php/extensions /usr/local/lib/php/extensions
 COPY --from=build /usr/local/include/php /usr/local/include/php
 
+RUN apt update && apt upgrade -y ; \
+    apt-get install -y --no-install-recommends \
+        unzip \
+        groff \
+        less ; \
+    mkdir -p /tmp/aws ; \
+    curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-${AWSCLI_ARCH_ARG}-${AWSCLI_VERSION_ARG}.zip" | \
+    unzip -d /tmp/aws ; \
+    /tmp/aws/install --update --install-dir /usr/local/aws-cli --bin-dir /usr/local/bin ; \
+    rm -rf /tmp/aws ; 
+
 RUN mkdir -p /opt/bin \
              /opt/sbin \
              /opt/etc/supervisor.d \
@@ -97,8 +113,6 @@ RUN mkdir -p /opt/bin \
              /app/tmp ; \
     chmod +x /usr/local/bin/container-entrypoint \
              /usr/local/bin/wait-for-it ; \
-    \
-    apt update && apt upgrade -y ; \
     \
     apt-get install -y --no-install-recommends \
                     libnss3-tools \
@@ -120,14 +134,10 @@ RUN mkdir -p /opt/bin \
                     jq \
                     libicu72 \
                     libxml2 \
-                    python3 \
-                    python3-pip \
-                    groff \
                     supervisor \
                     libtidy5deb1 \
                     libzip4 \
-                    dumb-init \
-                    awscli && \
+                    dumb-init && \
     rm -rf /var/lib/apt/lists/* ; \
     \
     docker-php-ext-enable soap \
@@ -161,9 +171,8 @@ RUN mkdir -p /opt/bin \
     groupadd -g 1001 default ; \
     useradd -u 1001 -g 1001 -G root -s /usr/sbin/nologin -m default ; \
     \
-    chown -Rf 1001:0 /home/default /app ; \
-    chmod -R ugo+rw /home/default /app ; \
-    find /app -type d -exec chmod ugo+x {} \; 
+    chown -Rf 1001:0 /home/default /app /opt ; \
+    chmod -R 775 /home/default /app /opt ; 
 
 USER 1001
 
@@ -178,7 +187,7 @@ FROM common AS prd
 
 USER root
 
-RUN cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" 
+RUN cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
 USER 1001
 
