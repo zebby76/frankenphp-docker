@@ -45,6 +45,11 @@ jobs:
 #      skip: ${{ steps.check.outputs.skip }}
       ref: ${{ steps.check.outputs.ref || (github.event_name == 'workflow_dispatch' && inputs.version) || '' }}
 
+    steps:
+
+      - name: Checkout source
+        uses: actions/checkout@v4
+
   docker-bake:
 
     runs-on: ubuntu-24.04
