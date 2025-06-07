@@ -49,6 +49,9 @@ jobs:
 
     runs-on: ubuntu-24.04
 
+    needs:
+      - prepare
+
     permissions:
       contents: read
       packages: write
