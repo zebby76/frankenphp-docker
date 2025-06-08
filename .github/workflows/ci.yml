@@ -304,12 +304,56 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
+      - name: Create platforms matrix
+        if: ${{ !fromJson(steps.check.outputs.skip) }}
+        id: matrix
+        shell: bash
+        run: |
+          set -e
+          METADATA="$(docker buildx bake --print | jq -c)"
+          {
+            echo metadata="${METADATA}"
+            echo platforms="$(jq -c 'first(.target[]) | .platforms' <<< "${METADATA}")"
+          } >> "${GITHUB_OUTPUT}"
+
+      - name: Inspect prd image
+        id: tag-prd
+        run: |
+          set -e
+          {
+            echo tags="$(docker buildx imagetools inspect $(jq -cr '.target.prd.tags | first' <<< "${METADATA}")"
+          } >> "${GITHUB_OUTPUT}"
+        env:
+          METADATA: ${{ needs.prepare.outputs.metadata }}
+
+      - name: Inspect dev image
+        id: tag-dev
+        run: |
+          set -e
+          {
+            echo tags="$(docker buildx imagetools inspect $(jq -cr '.target.prd.tags | first' <<< "${METADATA}")"
+          } >> "${GITHUB_OUTPUT}"
+        env:
+          METADATA: ${{ needs.prepare.outputs.metadata }}
+
       - name: Docker Scout
         if: fromJson(needs.prepare.outputs.push)
         uses: docker/scout-action@v1
         with:
           command: quickview
-#          image: ${{ steps.meta.outputs.tags }}
+          image: ${{ steps.tag-prd.outputs.tags }}
+          platform: ${{ matrix.platform }}
+#          to-env: production
+          ignore-unchanged: true
+          only-severities: critical,high
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker Scout
+        if: fromJson(needs.prepare.outputs.push)
+        uses: docker/scout-action@v1
+        with:
+          command: quickview
+          image: ${{ steps.tag-dev.outputs.tags }}
           platform: ${{ matrix.platform }}
 #          to-env: production
           ignore-unchanged: true
