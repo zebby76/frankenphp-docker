@@ -281,9 +281,7 @@ jobs:
         id: get-tags
         run: |
           set -x
-          tag=$(jq -cr '.target."${{ matrix.target }}".tags | first' <<< ${METADATA})
-          echo "🔍 Inspecting tag: $tag"
-          result=$(docker buildx imagetools inspect "$tag")
+          tags=$(jq -cr '.target."${{ matrix.target }}".tags | join(" ")' <<< ${METADATA})
           echo "tags=$result" >> "$GITHUB_OUTPUT"
         env:
           METADATA: ${{ needs.prepare.outputs.metadata }}
