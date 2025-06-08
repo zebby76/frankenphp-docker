@@ -320,9 +320,10 @@ jobs:
         id: tag-prd
         run: |
           set -e
-          {
-            echo tags="$(docker buildx imagetools inspect $(jq -cr '.target.prd.tags | first' <<< "${METADATA}")"
-          } >> "${GITHUB_OUTPUT}"
+          tag=$(jq -cr '.target.prd.tags | first' <<< "${METADATA}")
+          echo "🔍 Inspecting tag: $tag"
+          result=$(docker buildx imagetools inspect "$tag")
+          echo "tags=$result" >> "$GITHUB_OUTPUT"
         env:
           METADATA: ${{ needs.prepare.outputs.metadata }}
 
@@ -330,9 +331,10 @@ jobs:
         id: tag-dev
         run: |
           set -e
-          {
-            echo tags="$(docker buildx imagetools inspect $(jq -cr '.target.prd.tags | first' <<< "${METADATA}")"
-          } >> "${GITHUB_OUTPUT}"
+          tag=$(jq -cr '.target.dev.tags | first' <<< "${METADATA}")
+          echo "🔍 Inspecting tag: $tag"
+          result=$(docker buildx imagetools inspect "$tag")
+          echo "tags=$result" >> "$GITHUB_OUTPUT"
         env:
           METADATA: ${{ needs.prepare.outputs.metadata }}
 
