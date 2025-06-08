@@ -5,7 +5,9 @@ ARG PHP_VERSION_ARG
 ARG NODE_VERSION_ARG
 ARG COMPOSER_VERSION_ARG
 ARG FRANKENPHP_VERSION_ARG
+ARG GOMPLATE_VERSION_ARG
 
+FROM hairyhenderson/gomplate:v${GOMPLATE_VERSION_ARG:-4.3.2} AS gomplate
 FROM composer:${COMPOSER_VERSION_ARG:-2.8.4} AS composer
 FROM node:${NODE_VERSION_ARG:-20} AS node
 FROM dunglas/frankenphp:${FRANKENPHP_VERSION_ARG:-1.6.0}-php${PHP_VERSION_ARG:-8.4.7}-${REL_ARG:-bookworm} AS upstream
@@ -60,7 +62,6 @@ LABEL org.opencontainers.image.title="ZeBBy76 FrankenPHP" \
       org.opencontainers.image.authors="sebastian.molle@gmail.com" \
       org.opencontainers.image.source="https://github.com/zebby76/frankenphp-docker"
 
-ARG GOMPLATE_VERSION_ARG
 ARG AWSCLI_VERSION_ARG
 ARG AWSCLI_ARCH_ARG
 
@@ -82,13 +83,13 @@ VOLUME /opt/etc
 VOLUME /app/var
 VOLUME /app/tmp
 
-COPY --from=hairyhenderson/gomplate:v${GOMPLATE_VERSION_ARG:-4.3.2} /gomplate /usr/bin/gomplate
 COPY --chmod=664 --chown=1001:0 config/ /opt/config/
 
 COPY --chmod=775 --chown=root:root bin/ /usr/local/bin/
 
 COPY --from=build /usr/local/lib/php/extensions /usr/local/lib/php/extensions
 COPY --from=build /usr/local/include/php /usr/local/include/php
+COPY --from=gomplate /gomplate /usr/bin/gomplate
 
 RUN apt update && apt upgrade -y ; \
     apt-get install -y --no-install-recommends \
