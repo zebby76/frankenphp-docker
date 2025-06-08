@@ -310,7 +310,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Create platforms matrix
-        if: ${{ !fromJson(steps.check.outputs.skip) }}
+        if: ${{ !fromJson(needs.prepare.outputs.skip) }}
         id: matrix
         shell: bash
         run: |
