@@ -205,13 +205,15 @@ jobs:
 
       - uses: actions/attest-build-provenance@v2
         with:
-          subject-name: metadata-dev-${{ steps.prepare.outputs.sanitized_platform }}
+          subject-name: metadata-prd-${{ steps.prepare.outputs.sanitized_platform }}
           subject-digest: sha256:${{ steps.upload-prd.outputs.artifact-digest }}
+          subject-path: /tmp/metadata/prd/metadata-prd-${{ steps.prepare.outputs.sanitized_platform }}
 
       - uses: actions/attest-build-provenance@v2
         with:
           subject-name: metadata-dev-${{ steps.prepare.outputs.sanitized_platform }}
           subject-digest: sha256:${{ steps.upload-dev.outputs.artifact-digest }}
+          subject-path: /tmp/metadata/dev/metadata-dev-${{ steps.prepare.outputs.sanitized_platform }}
 
 #      - name: Docker Scout
 #        if: fromJson(needs.prepare.outputs.push)
@@ -282,11 +284,3 @@ jobs:
           docker buildx imagetools inspect $(jq -cr '.target."${{ matrix.target }}".tags | first' <<< ${METADATA})
         env:
           METADATA: ${{ needs.prepare.outputs.metadata }}
-
-      - name: Attest
-        uses: actions/attest-build-provenance@v2
-        id: attest
-        with:
-          subject-name: docker.io/${{ env.DOCKER_IMAGE_NAME }}
-          subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: true
