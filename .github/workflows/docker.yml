@@ -183,7 +183,7 @@ jobs:
         if: fromJson(needs.prepare.outputs.push)
         uses: actions/upload-artifact@v4
         with:
-          name: metadata-prd-${{ steps.prepare.outputs.sanitized_platform }}
+          name: metadata-prd-${{ steps.prepare.outputs.sanitized_platform }}-${{ github.sha }}
           path: /tmp/metadata/prd/*
           if-no-files-found: error
           retention-days: 1
@@ -193,7 +193,7 @@ jobs:
         if: fromJson(needs.prepare.outputs.push)
         uses: actions/upload-artifact@v4
         with:
-          name: metadata-dev-${{ steps.prepare.outputs.sanitized_platform }}
+          name: metadata-dev-${{ steps.prepare.outputs.sanitized_platform }}-${{ github.sha }}
           path: /tmp/metadata/dev/*
           if-no-files-found: error
           retention-days: 1
@@ -201,14 +201,14 @@ jobs:
       - uses: actions/attest-build-provenance@v2
         with:
           show-summary: false
-          subject-name: metadata-prd-${{ steps.prepare.outputs.sanitized_platform }}
+          subject-name: metadata-prd-${{ steps.prepare.outputs.sanitized_platform }}-${{ github.sha }}
           subject-digest: sha256:${{ steps.upload-prd.outputs.artifact-digest }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/attest-build-provenance@v2
         with:
           show-summary: false
-          subject-name: metadata-dev-${{ steps.prepare.outputs.sanitized_platform }}
+          subject-name: metadata-dev-${{ steps.prepare.outputs.sanitized_platform }}-${{ github.sha }}
           subject-digest: sha256:${{ steps.upload-dev.outputs.artifact-digest }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
