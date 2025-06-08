@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC1090
 
 log "INFO" "| Running Application configuration script(s) ... ..."
 

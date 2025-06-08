@@ -2,7 +2,8 @@
 
 OUTDIR="${BASE_BIN_DIR} ${BASE_VAR_DIR} ${BASE_ETC_DIR} ${BASE_TMP_DIR}"
 
-# mkdir -p ${OUTDIR}
+log "INFO" "| Configure Symfony ... "
+log "INFO" "| $(ls -ld ${OUTDIR}) "
 
 # for dir in ${OUTDIR}; do
 #   setfacl -R -m u:"$(whoami)":rwX "$dir"

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC1090
 
 if [ -d /opt/bin/container-entrypoint.d/entrypoint.d ]; then
 

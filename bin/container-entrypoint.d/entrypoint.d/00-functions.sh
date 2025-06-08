@@ -4,7 +4,9 @@ function log {
 
 	local level=$1
 	local message=$2
-	local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+
+	local timestamp
+	timestamp=$(date '+%Y-%m-%d %H:%M:%S')
 
 	local color_reset="\033[0m"
 	local color_red="\033[31m"
