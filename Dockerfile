@@ -67,8 +67,6 @@ ARG AWSCLI_ARCH_ARG
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-USER root
-
 ENV XDG_CONFIG_HOME="/opt/etc" \
     XDG_DATA_HOME="/app/var/cache" \
     PHP_INI_SCAN_DIR="/usr/local/etc/php/conf.d:/opt/etc/php/conf.d" \
@@ -176,8 +174,6 @@ RUN mkdir -p /opt/bin \
     chown -Rf 1001:0 /home/default /app /opt ; \
     chmod -R 775 /home/default /app /opt ; 
 
-USER 1001
-
 ENTRYPOINT ["dumb-init","--","container-entrypoint"]
 
 HEALTHCHECK --start-period=2s --interval=30s --timeout=5s --retries=3 \
@@ -186,8 +182,6 @@ HEALTHCHECK --start-period=2s --interval=30s --timeout=5s --retries=3 \
 CMD ["/usr/bin/supervisord", "-c", "/opt/etc/supervisord.conf"]
 
 FROM common AS prd
-
-USER root
 
 RUN cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
@@ -198,8 +192,6 @@ FROM prd AS dev
 EXPOSE 9003/tcp
 
 ENV PHP_XDEBUG_MODE="develop"
-
-USER root
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
