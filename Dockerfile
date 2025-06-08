@@ -24,28 +24,28 @@ ENV PHP_EXT_REDIS_VERSION=${PHP_EXT_REDIS_VERSION_ARG:-6.1.0} \
     PHP_EXT_APCU_VERSION=${PHP_EXT_APCU_VERSION_ARG:-5.1.24} \
     PHP_EXT_XDEBUG_VERSION=${PHP_EXT_XDEBUG_VERSION_ARG:-3.4.1}
 
-RUN apt update ; \
-    apt install -y --no-install-recommends \
-                autoconf \
-                libfreetype6-dev \
-                libicu-dev \
-                libjpeg-dev \
-                libpng-dev \
-                libwebp-dev \
-                libxpm-dev \
-                libzip-dev \
-                libldap2-dev \
-                libpcre3-dev \
-                gnupg \
-                git \
-                libbz2-dev \
-                gettext \
-                libpq-dev \
-                libxml2-dev \
-                libtidy-dev \
-                libxslt-dev \
-                coreutils \
-                $PHPIZE_DEPS && \
+RUN apt-get update ; \
+    apt-get install -y --no-install-recommends \
+        autoconf \
+        libfreetype6-dev \
+        libicu-dev \
+        libjpeg-dev \
+        libpng-dev \
+        libwebp-dev \
+        libxpm-dev \
+        libzip-dev \
+        libldap2-dev \
+        libpcre3-dev \
+        gnupg \
+        git \
+        libbz2-dev \
+        gettext \
+        libpq-dev \
+        libxml2-dev \
+        libtidy-dev \
+        libxslt-dev \
+        coreutils \
+        $PHPIZE_DEPS && \
     rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-configure gd --with-freetype --with-webp --with-jpeg \
@@ -90,11 +90,13 @@ COPY --from=build /usr/local/lib/php/extensions /usr/local/lib/php/extensions
 COPY --from=build /usr/local/include/php /usr/local/include/php
 COPY --from=gomplate /gomplate /usr/bin/gomplate
 
-RUN apt update && apt upgrade -y ; \
+RUN apt-get update ; \
+    apt-get upgrade -y ; \
     apt-get install -y --no-install-recommends \
         unzip \
         groff \
         less ; \
+    rm -rf /var/lib/apt/lists/* ; \
     mkdir -p /tmp/aws ; \
     curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-${AWSCLI_ARCH_ARG}-${AWSCLI_VERSION_ARG}.zip" | \
     unzip -d /tmp/aws ; \
@@ -138,7 +140,7 @@ RUN mkdir -p /opt/bin \
                     supervisor \
                     libtidy5deb1 \
                     libzip4 \
-                    dumb-init && \
+                    dumb-init ; \
     rm -rf /var/lib/apt/lists/* ; \
     \
     docker-php-ext-enable soap \
