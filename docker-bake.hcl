@@ -48,6 +48,10 @@ variable "PHP_EXT_XDEBUG_VERSION" {
   default = "3.4.2"
 }
 
+variable "GOMPLATE_VERSION" {
+  default = "4.3.2"
+}
+
 variable "AWSCLI_VERSION" {
   default = "2.27.30"
 }
@@ -100,7 +104,7 @@ target "default" {
 
   platforms  = [
     "linux/amd64",
-    "linux/arm64"
+#    "linux/arm64"
   ]
 
   args = {
@@ -112,6 +116,7 @@ target "default" {
     PHP_EXT_REDIS_VERSION_ARG  = "${PHP_EXT_REDIS_VERSION}"
     PHP_EXT_APCU_VERSION_ARG   = "${PHP_EXT_APCU_VERSION}"
     PHP_EXT_XDEBUG_VERSION_ARG = "${PHP_EXT_XDEBUG_VERSION}"
+    GOMPLATE_VERSION_ARG       = "${GOMPLATE_VERSION}"
     AWSCLI_VERSION_ARG         = "${AWSCLI_VERSION}"
     AWSCLI_ARCH_ARG            = "${AWSCLI_ARCH}"
   }

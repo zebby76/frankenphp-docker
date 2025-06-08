@@ -60,6 +60,7 @@ LABEL org.opencontainers.image.title="ZeBBy76 FrankenPHP" \
       org.opencontainers.image.authors="sebastian.molle@gmail.com" \
       org.opencontainers.image.source="https://github.com/zebby76/frankenphp-docker"
 
+ARG GOMPLATE_VERSION_ARG
 ARG AWSCLI_VERSION_ARG
 ARG AWSCLI_ARCH_ARG
 
@@ -81,7 +82,7 @@ VOLUME /opt/etc
 VOLUME /app/var
 VOLUME /app/tmp
 
-COPY --from=hairyhenderson/gomplate:stable /gomplate /usr/bin/gomplate
+COPY --from=hairyhenderson/gomplate:v${GOMPLATE_VERSION_ARG:-4.3.2} /gomplate /usr/bin/gomplate
 COPY --chmod=664 --chown=1001:0 config/ /opt/config/
 
 COPY --chmod=775 --chown=root:root bin/ /usr/local/bin/
@@ -195,7 +196,7 @@ FROM prd AS dev
 
 EXPOSE 9003/tcp
 
-ENV PHP_XDEBUG_ENABLED="true"
+ENV PHP_XDEBUG_MODE="develop"
 
 USER root
 

@@ -34,8 +34,12 @@ jobs:
     runs-on: ubuntu-24.04
 
     outputs:
-#      # Push if it's a scheduled job, a tag, or if we're committing to the main branch
-#      push: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.version) || startsWith(github.ref, 'refs/tags/') || (github.ref == 'refs/heads/main' && github.event_name != 'pull_request')) && true || false }}
+      # Push if it's a scheduled job, a tag, or if we're committing to the main branch
+      push: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.version) || startsWith(github.ref, 'refs/tags/') || (github.ref == 'refs/heads/main' && github.event_name != 'pull_request')) && true || false }}
+      sbom: ${{ github.event_name != 'pull_request' }}
+      provenance: ${{ github.event_name != 'pull_request' }}
+      ref: ${{ steps.check.outputs.ref || (github.event_name == 'workflow_dispatch' && inputs.version) || '' }}
+
 #      variants: ${{ steps.matrix.outputs.variants }}
 #      platforms: ${{ steps.matrix.outputs.platforms }}
 #      metadata: ${{ steps.matrix.outputs.metadata }}
@@ -43,7 +47,6 @@ jobs:
 #      php82_version: ${{ steps.check.outputs.php82_version }}
 #      php83_version: ${{ steps.check.outputs.php83_version }}
 #      skip: ${{ steps.check.outputs.skip }}
-      ref: ${{ steps.check.outputs.ref || (github.event_name == 'workflow_dispatch' && inputs.version) || '' }}
 
     steps:
 
@@ -87,8 +90,10 @@ jobs:
       - name: Bake and push image
         uses: docker/bake-action@v6
         with:
+          sbom: ${{ needs.prepare.outputs.sbom }}
+          provenance: ${{ needs.prepare.outputs.provenance }}
+          push: ${{ needs.prepare.outputs.push }}
           targets: prd,dev
-          push: true
           files: |
             docker-bake.hcl
           set: |

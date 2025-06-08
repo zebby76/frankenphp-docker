@@ -8,6 +8,41 @@ post_max_size = {{ .Env.PHP_POST_MAX_SIZE }}
 display_errors = {{ .Env.PHP_DISPLAY_ERRORS }}
 memory_limit = {{ .Env.PHP_MEMORY_LIMIT }}
 
+opcache.enable = {{ .Env.PHP_OPCACHE_ENABLE }}
+
+{{- if eq (strings.ToLower .Env.PHP_OPCACHE_ENABLE) "true" }}
+
+opcache.revalidate_freq = {{ .Env.PHP_OPCACHE_REVALIDATE_FREQ }}
+opcache.fast_shutdown = {{ .Env.PHP_OPCACHE_FAST_SHUTDOWN }}
+
+{{- end }}
+
+{{- if ne (strings.ToLower .Env.PHP_XDEBUG_MODE) "off" }}
+
+xdebug.mode = {{ .Env.PHP_XDEBUG_MODE }}
+xdebug.start_with_request = {{ .Env.PHP_XDEBUG_START_WITH_REQUEST }}
+xdebug.client_port = {{ .Env.PHP_XDEBUG_CLIENT_PORT }}
+xdebug.client_host = {{ .Env.PHP_XDEBUG_CLIENT_HOST }}
+
+{{- end }}
+
+{{- if eq (strings.ToLower .Env.PHP_SYMFONY_ENABLE) "true" }}
+
 ; https://symfony.com/doc/current/performance.html
 realpath_cache_size = {{ .Env.PHP_REALPATH_CACHE_SIZE }}
 realpath_cache_ttl = {{ .Env.PHP_REALPATH_CACHE_TTL }}
+
+; https://symfony.com/doc/current/performance.html
+opcache.interned_strings_buffer = {{ .Env.PHP_OPCACHE_INTERNED_STRINGS_BUFFER }}
+opcache.max_accelerated_files = {{ .Env.PHP_OPCACHE_MAX_ACCELERATED_FILES }}
+opcache.memory_consumption = {{ .Env.PHP_OPCACHE_MEMORY_CONSUMPTION }}
+opcache.enable_file_override = {{ .Env.PHP_OPCACHE_ENABLE_FILE_OVERRIDE }}
+
+; https://symfony.com/doc/current/performance.html#use-the-opcache-class-preloading
+opcache.preload_user = {{ .Env.PHP_OPCACHE_PRELOAD_USER }}
+opcache.preload = {{ .Env.PHP_OPCACHE_PRELOAD }}
+
+; https://symfony.com/doc/current/performance.html#don-t-check-php-files-timestamps
+opcache.validate_timestamps = {{ .Env.PHP_OPCACHE_VALIDATE_TIMESTAMPS }}
+
+{{- end }}
