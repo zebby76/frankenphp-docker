@@ -204,12 +204,12 @@ jobs:
 
       - uses: actions/attest-build-provenance@v2
         with:
-          subject-name: metadata-dev-${{ steps.prepare.outputs.sanitized_platform }}.zip
+          subject-name: metadata-dev-${{ steps.prepare.outputs.sanitized_platform }}
           subject-digest: sha256:${{ steps.upload-prd.outputs.artifact-digest }}
 
       - uses: actions/attest-build-provenance@v2
         with:
-          subject-name: metadata-dev-${{ steps.prepare.outputs.sanitized_platform }}.zip
+          subject-name: metadata-dev-${{ steps.prepare.outputs.sanitized_platform }}
           subject-digest: sha256:${{ steps.upload-dev.outputs.artifact-digest }}
 
 #      - name: Docker Scout
