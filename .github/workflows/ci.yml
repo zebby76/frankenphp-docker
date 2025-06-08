@@ -205,14 +205,14 @@ jobs:
 
       - uses: actions/attest-build-provenance@v2
         with:
-          show-summary: true
+          show-summary: false
           subject-name: metadata-prd-${{ steps.prepare.outputs.sanitized_platform }}
           subject-digest: sha256:${{ steps.upload-prd.outputs.artifact-digest }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/attest-build-provenance@v2
         with:
-          show-summary: true
+          show-summary: false
           subject-name: metadata-dev-${{ steps.prepare.outputs.sanitized_platform }}
           subject-digest: sha256:${{ steps.upload-dev.outputs.artifact-digest }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -283,6 +283,7 @@ jobs:
     if: fromJson(needs.prepare.outputs.push)
 
     needs:
+      - prepare
       - push
 
     strategy:
