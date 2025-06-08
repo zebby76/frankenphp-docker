@@ -160,9 +160,9 @@ jobs:
             prd.cache-from=type=gha,scope=prd-${{ needs.prepare.outputs.ref || github.ref }}-${{ matrix.platform }}
             prd.cache-from=type=gha,scope=refs/heads/main-prd-${{ matrix.platform }}
             prd.cache-to=type=gha,scope=prd-${{ needs.prepare.outputs.ref || github.ref }}-${{ matrix.platform }},ignore-error=true
-            dev-${{ matrix.variant }}.cache-from=type=gha,scope=dev-${{ needs.prepare.outputs.ref || github.ref }}-${{ matrix.platform }}
-            dev-${{ matrix.variant }}.cache-from=type=gha,scope=refs/heads/main-dev-${{ matrix.platform }}
-            dev-${{ matrix.variant }}.cache-to=type=gha,scope=dev-${{ needs.prepare.outputs.ref || github.ref }}-${{ matrix.platform }},ignore-error=true
+            dev.cache-from=type=gha,scope=dev-${{ needs.prepare.outputs.ref || github.ref }}-${{ matrix.platform }}
+            dev.cache-from=type=gha,scope=refs/heads/main-dev-${{ matrix.platform }}
+            dev.cache-to=type=gha,scope=dev-${{ needs.prepare.outputs.ref || github.ref }}-${{ matrix.platform }},ignore-error=true
             ${{ fromJson(needs.prepare.outputs.push) && format('*.output=type=image,name={0},push-by-digest=true,name-canonical=true,push=true', env.DOCKER_IMAGE_NAME) || '' }}
         env:
           GIT_HASH: ${{ github.sha }}
