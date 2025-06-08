@@ -205,24 +205,17 @@ jobs:
 
       - uses: actions/attest-build-provenance@v2
         with:
+          show-summary: true
           subject-name: metadata-prd-${{ steps.prepare.outputs.sanitized_platform }}
           subject-digest: sha256:${{ steps.upload-prd.outputs.artifact-digest }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/attest-build-provenance@v2
         with:
+          show-summary: true
           subject-name: metadata-dev-${{ steps.prepare.outputs.sanitized_platform }}
           subject-digest: sha256:${{ steps.upload-dev.outputs.artifact-digest }}
-
-#      - name: Docker Scout
-#        if: fromJson(needs.prepare.outputs.push)
-#        uses: docker/scout-action@v1
-#        with:
-#          command: quickview
-#          image: ${{ steps.meta.outputs.tags }}
-#          to-env: production
-#          ignore-unchanged: true
-#          only-severities: critical,high
-#          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
   # Adapted from https://docs.docker.com/build/ci/github-actions/multi-platform/
   push:
@@ -282,3 +275,31 @@ jobs:
           docker buildx imagetools inspect $(jq -cr '.target."${{ matrix.target }}".tags | first' <<< ${METADATA})
         env:
           METADATA: ${{ needs.prepare.outputs.metadata }}
+
+  scout:
+
+    runs-on: ubuntu-24.04
+
+    if: fromJson(needs.prepare.outputs.push)
+
+    needs:
+      - push
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: ${{ fromJson(needs.prepare.outputs.platforms) }}
+
+    steps:
+
+      - name: Docker Scout
+        if: fromJson(needs.prepare.outputs.push)
+        uses: docker/scout-action@v1
+        with:
+          command: quickview
+#          image: ${{ steps.meta.outputs.tags }}
+          platform: ${{ matrix.platform }}
+#          to-env: production
+          ignore-unchanged: true
+          only-severities: critical,high
+          github-token: ${{ secrets.GITHUB_TOKEN }}
