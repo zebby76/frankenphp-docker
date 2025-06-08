@@ -45,7 +45,8 @@ RUN apt update ; \
                 libtidy-dev \
                 libxslt-dev \
                 coreutils \
-                $PHPIZE_DEPS
+                $PHPIZE_DEPS && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-configure gd --with-freetype --with-webp --with-jpeg \
     && docker-php-ext-configure tidy --with-tidy \
