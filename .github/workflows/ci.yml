@@ -295,7 +295,7 @@ jobs:
           image: ${{ steps.get-tags.outputs.tags }}
           platform: ${{ matrix.platform }}
 #          to-env: production
-          to-latest: true
+#          to-latest: true
           ignore-base: true
           ignore-unchanged: true
           only-fixed: true
