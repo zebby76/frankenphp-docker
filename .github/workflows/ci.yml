@@ -28,7 +28,7 @@ on:
         type: string
 
 env:
-  DOCKER_IMAGE_NAME: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.version) || startsWith(github.ref, 'refs/tags/')) && 'zebby76/frankenphp' || 'zebby76/frankenphp-dev' }}
+  DOCKER_IMAGE_NAME: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.version) || startsWith(github.ref, 'refs/tags/') || (github.ref == 'refs/heads/main' && github.event_name != 'pull_request')) && 'zebby76/frankenphp' || 'zebby76/frankenphp-dev' }}
 
 jobs:
 
@@ -204,12 +204,12 @@ jobs:
 
       - uses: actions/attest-build-provenance@v2
         with:
-          subject-name: metadata-dev-${{ steps.prepare.outputs.sanitized_platform }}
+          subject-name: metadata-dev-${{ steps.prepare.outputs.sanitized_platform }}.zip
           subject-digest: sha256:${{ steps.upload-prd.outputs.artifact-digest }}
 
       - uses: actions/attest-build-provenance@v2
         with:
-          subject-name: metadata-dev-${{ steps.prepare.outputs.sanitized_platform }}
+          subject-name: metadata-dev-${{ steps.prepare.outputs.sanitized_platform }}.zip
           subject-digest: sha256:${{ steps.upload-dev.outputs.artifact-digest }}
 
 #      - name: Docker Scout
