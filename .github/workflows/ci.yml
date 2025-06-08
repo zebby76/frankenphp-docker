@@ -154,13 +154,13 @@ jobs:
           GIT_HASH: ${{ github.sha }}
           DOCKER_IMAGE_VERSION: ${{ (github.ref_type == 'tag' && github.ref_name) || needs.prepare.outputs.ref || 'snapshot' }}
 
-      - name: Docker Scout
-        if: ${{ needs.prepare.outputs.push }}
-        uses: docker/scout-action@v1
-        with:
-          command: quickview
-          image: ${{ steps.meta.outputs.tags }}
-          to-env: production
-          ignore-unchanged: true
-          only-severities: critical,high
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Docker Scout
+#        if: ${{ needs.prepare.outputs.push }}
+#        uses: docker/scout-action@v1
+#        with:
+#          command: quickview
+#          image: ${{ steps.meta.outputs.tags }}
+#          to-env: production
+#          ignore-unchanged: true
+#          only-severities: critical,high
+#          github-token: ${{ secrets.GITHUB_TOKEN }}
