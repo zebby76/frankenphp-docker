@@ -95,7 +95,7 @@ RUN apt-get update ; \
     apt-get install -y --no-install-recommends \
         unzip \
         groff \
-        less ; \
+        less && \
     rm -rf /var/lib/apt/lists/* ; \
     mkdir -p /tmp/aws ; \
     curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-${AWSCLI_ARCH_ARG}-${AWSCLI_VERSION_ARG}.zip" | \
@@ -140,7 +140,7 @@ RUN mkdir -p /opt/bin \
                     supervisor \
                     libtidy5deb1 \
                     libzip4 \
-                    dumb-init ; \
+                    dumb-init && \
     rm -rf /var/lib/apt/lists/* ; \
     \
     docker-php-ext-enable soap \
