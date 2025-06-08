@@ -146,8 +146,8 @@ jobs:
         with:
           pull: true
           load: ${{ !fromJson(needs.prepare.outputs.push) }}
-          sbom: ${{ !fromJson(needs.prepare.outputs.sbom) }}
-          provenance: ${{ !fromJson(needs.prepare.outputs.provenance) }}
+          sbom: ${{ fromJson(needs.prepare.outputs.sbom) }}
+          provenance: ${{ fromJson(needs.prepare.outputs.provenance) }}
           targets: |
             prd
             dev
@@ -263,3 +263,11 @@ jobs:
           docker buildx imagetools inspect $(jq -cr '.target."${{ matrix.target }}".tags | first' <<< ${METADATA})
         env:
           METADATA: ${{ needs.prepare.outputs.metadata }}
+
+      - name: Attest
+        uses: actions/attest-build-provenance@v2
+        id: attest
+        with:
+          subject-name: docker.io/${{ env.DOCKER_IMAGE_NAME }}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
