@@ -176,7 +176,8 @@ RUN mkdir -p /opt/bin \
 ENTRYPOINT ["dumb-init","--","container-entrypoint"]
 
 HEALTHCHECK --start-period=2s --interval=30s --timeout=5s --retries=3 \
-  CMD supervisorctl status frankenphp | grep -q 'RUNNING' || exit 1
+  CMD supervisorctl -c /opt/etc/supervisord.conf status frankenphp | \
+      grep -q 'RUNNING' || exit 1
 
 CMD ["/usr/bin/supervisord", "-c", "/opt/etc/supervisord.conf"]
 
