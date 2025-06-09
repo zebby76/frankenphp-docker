@@ -123,7 +123,7 @@ target "default" {
 
   labels = {
     "org.opencontainers.image.created" = "${timestamp()}"
-    "org.opencontainers.image.version" = FRANKENPHP_VERSION
+    "org.opencontainers.image.version" = DOCKER_IMAGE_VERSION
     "org.opencontainers.image.revision" = GIT_HASH
   }
 
