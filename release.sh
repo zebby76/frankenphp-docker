@@ -4,37 +4,37 @@
 # This script follows semantic versioning and interacts with GitHub.
 # It requires git, gh, and brew to be installed.
 
-set -o nounset        # Exit on unset variable
-set -o errexit        # Exit on error
-set -o errtrace       # Trace errors through functions
-set -o pipefail       # Catch errors in pipelines
+set -o nounset  # Exit on unset variable
+set -o errexit  # Exit on error
+set -o errtrace # Trace errors through functions
+set -o pipefail # Catch errors in pipelines
 #set -o xtrace         # Enable command tracing (for debugging)
 
 # Function to check if required commands are installed
 check_command() {
-  if ! command -v "$1" >/dev/null; then
-    echo "Error: The \"$1\" command must be installed." >&2
-    exit 1
-  fi
+	if ! command -v "$1" >/dev/null; then
+		echo "Error: The \"$1\" command must be installed." >&2
+		exit 1
+	fi
 }
 
 # Check for required commands
 for cmd in git gh brew; do
-  check_command "$cmd"
+	check_command "$cmd"
 done
 
 # Check if version argument is provided
 if [[ $# -ne 1 ]]; then
-  echo "Usage: $0 <version>" >&2
-  exit 1
+	echo "Usage: $0 <version>" >&2
+	exit 1
 fi
 
 # Validate the provided version using semver regex
 version_regex='^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-((0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*))*))?(\+([0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*))?$'
 
 if [[ ! $1 =~ $version_regex ]]; then
-  echo "Invalid version number: $1. Please follow semantic versioning (e.g., 1.2.3)." >&2
-  exit 1
+	echo "Invalid version number: $1. Please follow semantic versioning (e.g., 1.2.3)." >&2
+	exit 1
 fi
 
 # Define version from argument
@@ -62,8 +62,8 @@ tags=$(git tag --list --sort=-version:refname '[0-9]*\.[0-9]*\.[0-9]*')
 previous_tag=$(awk 'NR==2 {print; exit}' <<<"${tags}")
 
 if [[ -z "$previous_tag" ]]; then
-  echo "Error: Unable to find a previous tag." >&2
-  exit 1
+	echo "Error: Unable to find a previous tag." >&2
+	exit 1
 fi
 
 # Create a new GitHub release with the generated notes
