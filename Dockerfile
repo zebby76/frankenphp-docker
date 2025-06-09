@@ -84,7 +84,7 @@ VOLUME /app/tmp
 
 COPY --chmod=664 --chown=1001:0 config/ /opt/config/
 
-COPY --chmod=775 --chown=root:root bin/ /usr/local/bin/
+COPY --chmod=755 --chown=root:root bin/ /usr/local/bin/
 
 COPY --from=build /usr/local/lib/php/extensions /usr/local/lib/php/extensions
 COPY --from=build /usr/local/include/php /usr/local/include/php
@@ -95,8 +95,7 @@ RUN apt-get update ; \
     apt-get install -y --no-install-recommends \
         unzip \
         groff \
-        less && \
-    rm -rf /var/lib/apt/lists/* ; \
+        less ; \
     mkdir -p /tmp/aws ; \
     curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-${AWSCLI_ARCH_ARG}-${AWSCLI_VERSION_ARG}.zip" | \
     unzip -d /tmp/aws ; \
@@ -114,9 +113,6 @@ RUN mkdir -p /opt/bin \
              /app/var/run \
              /app/var/cache/caddy \
              /app/tmp ; \
-    chmod +x /usr/local/bin/container-entrypoint \
-             /usr/local/bin/wait-for-it ; \
-    \
     apt-get install -y --no-install-recommends \
                     libnss3-tools \
                     procps \
@@ -140,7 +136,7 @@ RUN mkdir -p /opt/bin \
                     supervisor \
                     libtidy5deb1 \
                     libzip4 \
-                    dumb-init && \
+                    dumb-init ; \
     rm -rf /var/lib/apt/lists/* ; \
     \
     docker-php-ext-enable soap \
