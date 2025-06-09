@@ -199,6 +199,7 @@ jobs:
           retention-days: 1
 
       - uses: actions/attest-build-provenance@v2
+        if: fromJson(needs.prepare.outputs.push)
         with:
           show-summary: true
           subject-name: metadata-prd-${{ steps.prepare.outputs.sanitized_platform }}-${{ github.sha }}
@@ -206,6 +207,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/attest-build-provenance@v2
+        if: fromJson(needs.prepare.outputs.push)
         with:
           show-summary: true
           subject-name: metadata-dev-${{ steps.prepare.outputs.sanitized_platform }}-${{ github.sha }}
