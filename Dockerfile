@@ -187,11 +187,11 @@ RUN cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
 USER 1001
 
-FROM prd AS dev
+FROM common AS dev
 
 EXPOSE 9003/tcp
 
-ENV PHP_XDEBUG_MODE="develop"
+ENV XDEBUG_MODE="develop"
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
