@@ -25,7 +25,7 @@ variable "PHP_VERSION" {
 }
 
 variable "FRANKENPHP_VERSION" {
-  default = "1.6.2"
+  default = "1.7.0"
 }
 
 variable "NODE_VERSION" {
