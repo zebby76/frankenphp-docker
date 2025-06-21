@@ -25,7 +25,7 @@ variable "PHP_VERSION" {
 }
 
 variable "FRANKENPHP_VERSION" {
-  default = "1.6.0"
+  default = "1.6.2"
 }
 
 variable "NODE_VERSION" {
@@ -45,7 +45,7 @@ variable "PHP_EXT_APCU_VERSION" {
 }
 
 variable "PHP_EXT_XDEBUG_VERSION" {
-  default = "3.4.2"
+  default = "3.4.4"
 }
 
 variable "GOMPLATE_VERSION" {
@@ -53,7 +53,7 @@ variable "GOMPLATE_VERSION" {
 }
 
 variable "AWSCLI_VERSION" {
-  default = "2.27.30"
+  default = "2.27.40"
 }
 
 variable "AWSCLI_ARCH" {
